@@ -6,3 +6,4 @@ vendor/
 *.exe
 
 fake-quotes-svc
+config.yaml

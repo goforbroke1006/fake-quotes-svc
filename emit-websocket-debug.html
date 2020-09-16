@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Emit WebSocket Debug</title>
+</head>
+<body>
+
+
+<script>
+    var socket = new WebSocket("ws://localhost:8080/ws");
+    socket.onopen = function () {
+        console.log("connection is opened...");
+    };
+    socket.onclose = function () {
+        console.log("connection is closed...");
+    };
+    socket.onmessage = function (event) {
+        console.log("new message: " + event.data);
+    }
+</script>
+
+</body>
+</html>

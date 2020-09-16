@@ -2,11 +2,14 @@ REGISTRY=docker.io
 OWNER=goforbroke1006
 SERVICE_NAME=fake-quotes-svc
 
-VERSION ?= $(shell git describe --abbrev=0 --tags | git rev-parse --abbrev-ref HEAD | echo '0.1.0')
-HASH ?= $(shell git rev-parse --verify HEAD | echo 'unknown')
+VERSION ?= $(shell git describe --abbrev=0 --tags 2> /dev/null | git rev-parse --abbrev-ref HEAD 2> /dev/null | echo 'unknown')
+HASH ?= $(shell git rev-parse --verify HEAD 2> /dev/null | echo 'unknown')
 BUILD_DATE = $(shell date -u '+%Y-%m-%d %H:%M:%S %Z')
 
-all: build lint test
+all: dep build lint test
+
+dep:
+	GOPROXY=direct go mod download
 
 build:
 	go build -ldflags "-s -w -X 'main.date=${BUILD_DATE}' -X main.version=${VERSION} -X main.commit=${HASH}" -o ${SERVICE_NAME} ./
