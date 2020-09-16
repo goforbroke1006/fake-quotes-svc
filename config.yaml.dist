@@ -1,25 +1,25 @@
 actives:
   - code: EUR/USD
-    value_opts:
+    opts:
       start: 1.18
       upper: 1.25
       bottom: 1.14
-      volatility_abs: 0.02
+      volatilityabs: 0.02
   - code: USD/RUB
-    value_opts:
+    opts:
       start: 75.007
       upper: 75.507
       bottom: 75.000
-      volatility_abs: 0.0035
+      volatilityabs: 0.0035
   - code: USD/JPY
-    value_opts:
+    opts:
       start: 104.92
       upper: 106.92
       bottom: 102.92
-      volatility_abs: 0.048
+      volatilityabs: 0.048
   - code: GBP/JPY
-    value_opts:
+    opts:
       start: 136.06
       upper: 138.00
       bottom: 133.00
-      volatility_abs: 0.23
+      volatilityabs: 0.23
