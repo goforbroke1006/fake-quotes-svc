@@ -5,11 +5,11 @@ import (
 	"math/rand"
 )
 
-func NewFaker(start, upper, bottom, volatilityAbs float64) *faker {
+func NewFaker(start, upper, lower, volatilityAbs float64) *faker {
 	return &faker{
 		start:         start,
 		upper:         upper,
-		bottom:        bottom,
+		lower:         lower,
 		volatilityAbs: volatilityAbs,
 
 		last: start,
@@ -19,7 +19,7 @@ func NewFaker(start, upper, bottom, volatilityAbs float64) *faker {
 type faker struct {
 	start         float64
 	upper         float64
-	bottom        float64
+	lower         float64
 	volatilityAbs float64
 
 	last float64
@@ -27,7 +27,7 @@ type faker struct {
 
 func (f *faker) Next() (bid, ask float64) {
 	hv := f.volatilityAbs / 2
-	rmin := math.Min(f.bottom, f.last-hv)
+	rmin := math.Min(f.lower, f.last-hv)
 	rmax := math.Max(f.upper, f.last+hv)
 
 	f.last = rmin + rand.Float64()*(rmax-rmin)

@@ -12,6 +12,6 @@ type Active struct {
 type ValueOpts struct {
 	Start         float64
 	Upper         float64
-	Bottom        float64
+	Lower         float64
 	VolatilityAbs float64
 }

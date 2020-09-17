@@ -18,7 +18,7 @@ func NewEmitter(
 		faker: NewFaker(
 			active.Opts.Start,
 			active.Opts.Upper,
-			active.Opts.Bottom,
+			active.Opts.Lower,
 			active.Opts.VolatilityAbs,
 		),
 		hub:       hub,
