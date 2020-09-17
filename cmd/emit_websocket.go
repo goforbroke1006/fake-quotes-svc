@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/goforbroke1006/fake-quotes-svc/internal/component"
 	"log"
 	"math/rand"
 	"net/http"
@@ -14,10 +15,10 @@ import (
 	"go.uber.org/atomic"
 
 	"github.com/goforbroke1006/fake-quotes-svc/domain"
-	"github.com/goforbroke1006/fake-quotes-svc/internal/component/wshub"
 	"github.com/goforbroke1006/fake-quotes-svc/pkg/config"
 	"github.com/goforbroke1006/fake-quotes-svc/pkg/shutdowner"
 	"github.com/goforbroke1006/fake-quotes-svc/pkg/svc_http"
+	"github.com/goforbroke1006/fake-quotes-svc/pkg/wshub"
 )
 
 func init() {
@@ -37,14 +38,7 @@ func init() {
 
 			isReady := atomic.NewBool(false)
 
-			stream := make(chan domain.Quote, len(cfg.Actives))
-			hub := wshub.WSHub{}
-
-			go func() {
-				for m := range stream {
-					hub.Send(m)
-				}
-			}()
+			hub := &wshub.WSHub{}
 
 			go func() {
 				var wg sync.WaitGroup
@@ -53,17 +47,10 @@ func init() {
 				for _, active := range cfg.Actives {
 					go func(a domain.Active) {
 						time.Sleep(time.Duration(rand.Intn(5000)) * time.Millisecond)
-						go func() {
-							for {
-								stream <- domain.Quote{
-									Code: a.Code,
-									Bid:  1,
-									Ask:  1,
-									At:   time.Now().Unix(),
-								} // TODO: realize quote value rand modification
-								time.Sleep(100 * time.Millisecond)
-							}
-						}()
+
+						emitter := component.NewEmitter(a, hub, 500)
+						go emitter.Emit()
+
 						wg.Done()
 					}(active)
 				}
@@ -74,7 +61,7 @@ func init() {
 
 			go func() {
 				mux := svc_http.New(isReady)
-				mux.HandleFunc("/ws", handleWsConn(&hub))
+				mux.HandleFunc("/ws", handleWsConn(hub))
 				logrus.Fatal(http.ListenAndServe(handleAddrArg, mux))
 			}()
 

@@ -9,7 +9,7 @@ import (
 
 type WSHub struct {
 	clients []*websocket.Conn
-	sync.RWMutex
+	sync.Mutex
 }
 
 func (hub *WSHub) Add(c *websocket.Conn) {
@@ -21,11 +21,11 @@ func (hub *WSHub) Add(c *websocket.Conn) {
 func (hub *WSHub) Send(msg interface{}) {
 	msgData, _ := json.Marshal(msg)
 
-	hub.RLock()
+	hub.Lock()
 	for _, c := range hub.clients {
 		_ = c.WriteMessage(websocket.TextMessage, msgData)
 	}
-	hub.RUnlock()
+	hub.Unlock()
 }
 
 func (hub *WSHub) Close() error {
