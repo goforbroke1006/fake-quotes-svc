@@ -2,19 +2,20 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/goforbroke1006/fake-quotes-svc/internal/component"
 	"log"
 	"math/rand"
 	"net/http"
 	"sync"
 	"time"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"go.uber.org/atomic"
 
 	"github.com/goforbroke1006/fake-quotes-svc/domain"
+	"github.com/goforbroke1006/fake-quotes-svc/internal/component"
 	"github.com/goforbroke1006/fake-quotes-svc/pkg/config"
 	"github.com/goforbroke1006/fake-quotes-svc/pkg/shutdowner"
 	"github.com/goforbroke1006/fake-quotes-svc/pkg/svc_http"
@@ -61,8 +62,13 @@ func init() {
 
 			go func() {
 				mux := svc_http.New(isReady)
+
+				headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
+				originsOk := handlers.AllowedOrigins([]string{"*"})
+				methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
 				mux.HandleFunc("/ws", handleWsConn(hub))
-				logrus.Fatal(http.ListenAndServe(handleAddrArg, mux))
+				logrus.Fatal(http.ListenAndServe(handleAddrArg, handlers.CORS(originsOk, headersOk, methodsOk)(mux)))
 			}()
 
 			shutdowner.WaitTerminateSignal(func() {
@@ -88,6 +94,8 @@ func handleWsConn(hub *wshub.WSHub) func(w http.ResponseWriter, r *http.Request)
 			log.Print("upgrade:", err)
 			return
 		}
+
+		log.Print("new connection:")
 		hub.Add(c)
 	}
 }

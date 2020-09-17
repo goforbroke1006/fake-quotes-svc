@@ -5,4 +5,6 @@ COPY ./config.yaml /app/config.yaml
 
 WORKDIR /app/
 
-ENTRYPOINT fake-quotes-svc
+ENTRYPOINT [ "fake-quotes-svc" ]
+
+EXPOSE 8080
