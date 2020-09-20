@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+
   fake-quotes-svc--version:
     image: docker.io/goforbroke1006/fake-quotes-svc:latest
     command: [ "version" ]

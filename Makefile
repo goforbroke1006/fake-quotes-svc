@@ -12,7 +12,7 @@ dep:
 	GOPROXY=direct go mod download
 
 build:
-	go build -ldflags "-s -w -X 'main.date=${BUILD_DATE}' -X main.version=${VERSION} -X main.commit=${HASH}" -o ${SERVICE_NAME} ./
+	CGO_ENABLED=0 go build -ldflags "-s -w -X 'main.date=${BUILD_DATE}' -X main.version=${VERSION} -X main.commit=${HASH}" -o ${SERVICE_NAME} ./
 
 lint:
 	golangci-lint run
@@ -25,3 +25,15 @@ image:
 	docker build -t ${REGISTRY}/${OWNER}/${SERVICE_NAME}:latest		./
 	docker push ${REGISTRY}/${OWNER}/${SERVICE_NAME}:${VERSION}
 	docker push ${REGISTRY}/${OWNER}/${SERVICE_NAME}:latest
+
+image/local:
+	docker build -t ${REGISTRY}/${OWNER}/${SERVICE_NAME}:latest ./
+
+local/up:
+	docker-compose -f .local/docker-compose.yaml build
+	docker-compose -f .local/docker-compose.yaml up
+
+local/recreate:
+	docker-compose -f .local/docker-compose.yaml down
+	docker-compose -f .local/docker-compose.yaml build --no-cache
+	docker-compose -f .local/docker-compose.yaml up
