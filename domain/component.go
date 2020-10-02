@@ -1,7 +1,7 @@
 package domain
 
 type Faker interface {
-	Next() (bid, ask float64)
+	Next() (quote float64)
 }
 
 type Emitter interface {

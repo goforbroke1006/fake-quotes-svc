@@ -19,3 +19,13 @@
     ```
 4) Open http://localhost:18082/
 5) Open browser console. Now you see quotes streaming.
+
+### Sample
+
+```json
+{
+  "code": "GBP/JPY",
+  "value": 133.7437540905903,
+  "at": 1601631967
+}
+```

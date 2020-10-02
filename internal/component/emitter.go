@@ -19,7 +19,6 @@ func NewEmitter(
 			active.Opts.Start,
 			active.Opts.Upper,
 			active.Opts.Lower,
-			active.Opts.VolatilityAbs,
 		),
 		hub:       hub,
 		frequency: frequency,
@@ -35,12 +34,11 @@ type emitter struct {
 
 func (e emitter) Emit() {
 	for {
-		bid, ask := e.faker.Next()
+		quote := e.faker.Next()
 		q := domain.Quote{
-			Code: e.active.Code,
-			Bid:  bid,
-			Ask:  ask,
-			At:   time.Now().Unix(),
+			Code:  e.active.Code,
+			Value: quote,
+			At:    time.Now().Unix(),
 		}
 		e.hub.Send(q)
 
