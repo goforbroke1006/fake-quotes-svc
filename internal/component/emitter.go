@@ -27,7 +27,7 @@ func NewEmitter(
 
 type emitter struct {
 	active    domain.Active
-	faker     domain.Faker
+	faker     domain.QuoteFaker
 	hub       *wshub.WSHub
 	frequency uint
 }

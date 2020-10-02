@@ -1,9 +1,5 @@
 package domain
 
-type Faker interface {
+type QuoteFaker interface {
 	Next() (quote float64)
-}
-
-type Emitter interface {
-	Emit() Quote
 }
